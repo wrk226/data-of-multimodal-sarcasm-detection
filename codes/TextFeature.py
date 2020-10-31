@@ -1,4 +1,5 @@
-import tensorflow as tf
+import tensorflow._api.v2.compat.v1 as tf
+tf.disable_v2_behavior()
 import numpy as np
 
 class TextFeature():
@@ -32,9 +33,9 @@ class TextFeature():
             inputEmb = tf.nn.embedding_lookup(self.embedding, self.X)
             initFw = tf.nn.rnn_cell.LSTMStateTuple(tf.nn.relu(tf.matmul(guidence, self.weights["Fw1"]) + self.biases["Fw1"]), tf.nn.relu(tf.matmul(guidence, self.weights["Fw2"]) + self.biases["Fw2"]))
             initBw = tf.nn.rnn_cell.LSTMStateTuple(tf.nn.relu(tf.matmul(guidence, self.weights["Bw1"]) + self.biases["Bw1"]), tf.nn.relu(tf.matmul(guidence, self.weights["Bw2"]) + self.biases["Bw2"]))
-            rnnCellFw = tf.contrib.rnn.DropoutWrapper(tf.nn.rnn_cell.BasicLSTMCell(self.nHidden), input_keep_prob=self.pKeep,
+            rnnCellFw = tf.compat.v1.nn.rnn_cell.DropoutWrapper(tf.nn.rnn_cell.BasicLSTMCell(self.nHidden), input_keep_prob=self.pKeep,
                                                       output_keep_prob=1.0)
-            rnnCellBw = tf.contrib.rnn.DropoutWrapper(tf.nn.rnn_cell.BasicLSTMCell(self.nHidden), input_keep_prob=self.pKeep,
+            rnnCellBw = tf.compat.v1.nn.rnn_cell.DropoutWrapper(tf.nn.rnn_cell.BasicLSTMCell(self.nHidden), input_keep_prob=self.pKeep,
                                                       output_keep_prob=1.0)
             outputs, state = tf.nn.bidirectional_dynamic_rnn(cell_fw=rnnCellFw, cell_bw=rnnCellBw, inputs=inputEmb, initial_state_fw=initFw, initial_state_bw=initBw,
                                                              dtype=tf.float32)
@@ -43,4 +44,4 @@ class TextFeature():
             self.RNNState = tf.reduce_mean(outputsConcat, axis=1)
 
     def getEmbedding(self):
-        return np.loadtxt("../words/vector", delimiter=' ', dtype='float32')
+        return np.loadtxt("words/vector", delimiter=' ', dtype='float32')

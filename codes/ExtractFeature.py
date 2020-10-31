@@ -1,4 +1,5 @@
-import tensorflow as tf
+import tensorflow._api.v2.compat.v1 as tf
+tf.disable_v2_behavior()
 import numpy as np
 
 class ExtractFeature():
@@ -9,11 +10,11 @@ class ExtractFeature():
         self.x = tf.placeholder(tf.int32, [None, 5])
         with tf.variable_scope("training_variable"):
             self.weights = {
-                "MLP1": tf.Variable(tf.truncated_normal(shape=[self.embSize, self.embSize/2], stddev=0.08)), 
-                "MLP2": tf.Variable(tf.truncated_normal(shape=[self.embSize/2, 1], stddev=0.08))
+                "MLP1": tf.Variable(tf.truncated_normal(shape=[self.embSize, int(self.embSize/2)], stddev=0.08)),
+                "MLP2": tf.Variable(tf.truncated_normal(shape=[int(self.embSize/2), 1], stddev=0.08))
             }
             self.biases = {
-                "MLP1": tf.Variable(tf.constant(0.01, shape=[self.embSize/2], dtype=tf.float32)), 
+                "MLP1": tf.Variable(tf.constant(0.01, shape=[int(self.embSize/2)], dtype=tf.float32)),
                 "MLP2": tf.Variable(tf.constant(0.01, shape=[1], dtype=tf.float32))
             }
         self.inputEmb = tf.nn.embedding_lookup(self.embedding, self.x)
@@ -24,4 +25,4 @@ class ExtractFeature():
         self.finalState = tf.reshape(tf.matmul(p1, self.inputEmb), [-1, self.embSize])
 
     def getEmb(self):
-        return np.loadtxt("../ExtractWords/vector", delimiter=' ', dtype='float32')
+        return np.loadtxt("ExtractWords/vector", delimiter=' ', dtype='float32')

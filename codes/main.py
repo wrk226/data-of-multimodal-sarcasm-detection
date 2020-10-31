@@ -1,6 +1,7 @@
 import loadData
 import NNManager
-import tensorflow as tf
+import tensorflow._api.v2.compat.v1 as tf
+tf.disable_v2_behavior()
 import time
 
 class Main():
@@ -93,7 +94,7 @@ class Main():
             f1, pre, rec, acc, self.patience
         ))
         if f1 >= self.maxF1:
-            self.saver.save(sess, "../model/"+str(step)+".ckpt")
+            self.saver.save(sess, "model/"+str(step)+".ckpt")
             validF1 = f1
             tmpFlag = True
             self.maxF1 = f1
@@ -115,19 +116,19 @@ class Main():
             pre, rec, f1 = self.getF1(tp, fp, tn, fn)
             acc = float(tp + tn) / (tp + fp + tn + fn)
             if f1 > self.maxTF1:
-                fileO1 = open("../output/wrongList", "w")
+                fileO1 = open("output/wrongList", "w")
                 fileO1.write(str(self.fileNameOutput))
                 self.maxTF1 = f1
                 self.maxTpre = pre
                 self.maxTrec = rec
                 self.maxTacc = acc
                 self.maxTF1_validF1 = validF1
-                self.saver.save(sess, "../best_model/best.ckpt")
+                self.saver.save(sess, "best_model/best.ckpt")
             self.fileNameOutput = []
             print("test, f1={0:.5f}, pre={1:.5f}, rec={2:.5f}, acc={3:.5f}".format(
                 f1, pre, rec, acc
             ))
-            fileO = open("../output/test_result", "w")
+            fileO = open("output/test_result", "w")
             fileO.write(str([self.maxTF1, self.maxTpre, self.maxTrec, self.maxTacc]))
             fileO.close()
 

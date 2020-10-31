@@ -4,9 +4,9 @@ import random
 import pickle
 import re
 
-wordPrefix = "../extract/"
-dataPrefix = "../text/"
-imagePrefix = "../imageVector2/"
+wordPrefix = "extract/"
+dataPrefix = "text/"
+imagePrefix = "imageVector2/"
 
 class TextItem():
     def __init__(self, sentence, label):
@@ -44,23 +44,23 @@ class TextIterator():
         return dic
 
     def getVocab(self):
-        file = open("../words/vocab")
-        return pickle.load(file)
+        file = open("words/vocab","rb")
+        return pickle.load(file, encoding='latin1')
 
     def getVocabAttr(self):
-        file = open("../ExtractWords/vocab")
-        return pickle.load(file)
+        file = open("ExtractWords/vocab","rb")
+        return pickle.load(file, encoding='latin1')
 
     def readData(self, i, dic):
         p = n = 0
         if i == 0:
-            file = open(dataPrefix+"train.txt")
+            file = open(dataPrefix+"train.txt", 'rb')
             ls = self.trainNum
         elif i == 1:
-            file = open(dataPrefix+"valid2.txt")
+            file = open(dataPrefix+"valid2.txt", 'rb')
             ls = self.validNum
         else:
-            file = open(dataPrefix+"test2.txt")
+            file = open(dataPrefix+"test2.txt", 'rb')
             ls = self.testNum
         for line in file:
             lineLS = eval(line)
